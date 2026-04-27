@@ -1,0 +1,600 @@
+.class public Lf01/Config;
+.super Ljava/lang/Object;
+
+
+# static fields
+.field public static attemptTimes:Ljava/util/HashMap;
+
+.field public static hasAdapter:Z
+
+.field public static isAudioEnabled:Z
+
+.field public static isBidding:Z
+
+.field public static isOffering:Z
+
+.field public static isPolling:Z
+
+.field public static lastClosureTime:J
+
+.field public static lastGlobalActionTime:J
+
+.field public static lastOfferingTime:J
+
+.field public static listAdapter:Ljava/lang/Object;
+
+.field public static maxPickupDist:D
+
+.field public static maxRepeats:I
+
+.field public static seenOrders:Ljava/util/HashMap;
+
+
+# direct methods
+.method static constructor <clinit>()V
+    .registers 2
+
+    const-wide/high16 v0, 0x4059000000000000L    # 100.0
+
+    sput-wide v0, Lf01/Config;->maxPickupDist:D
+
+    const/4 v0, 0x0
+
+    sput v0, Lf01/Config;->maxRepeats:I
+
+    sput-boolean v0, Lf01/Config;->isPolling:Z
+
+    const/4 v0, 0x0
+
+    sput-boolean v0, Lf01/Config;->isOffering:Z
+
+    const/4 v0, 0x0
+
+    sput-boolean v0, Lf01/Config;->isAudioEnabled:Z
+
+    const/4 v0, 0x0
+
+    sput-boolean v0, Lf01/Config;->isBidding:Z
+
+    const-wide/16 v0, 0x0
+
+    sput-wide v0, Lf01/Config;->lastClosureTime:J
+
+    sput-wide v0, Lf01/Config;->lastOfferingTime:J
+
+    const/4 v0, 0x0
+
+    sput-object v0, Lf01/Config;->listAdapter:Ljava/lang/Object;
+
+    sget-object v0, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    if-nez v0, :cond_26
+
+    new-instance v0, Ljava/util/LinkedHashMap;
+
+    invoke-direct {v0}, Ljava/util/LinkedHashMap;-><init>()V
+
+    sput-object v0, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    :cond_26
+    return-void
+.end method
+
+.method public constructor <init>()V
+    .registers 1
+
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+
+    return-void
+.end method
+
+.method public static banOrder(Ljava/lang/String;)V
+    .registers 4
+
+    sget-object v0, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    if-nez v0, :cond_5
+
+    return-void
+
+    :cond_5
+    const-string v0, "ConfigDebug"
+
+    new-instance v1, Ljava/lang/StringBuilder;
+
+    invoke-direct {v1}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v2, "BANNING ID: "
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v1, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-static {v0, v1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+
+    sget-object v0, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    const v2, 0x1869f
+
+    invoke-static {v2}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+
+    move-result-object v1
+
+    invoke-virtual {v0, p0, v1}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+
+    invoke-static {}, Lf01/Config;->enforceLimit()V
+
+    goto :goto_34
+
+    goto :goto_34
+
+    move-exception v0
+
+    const-string v1, "ConfigDebug"
+
+    const-string v2, "Failed to notify adapter"
+
+    invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+
+    :goto_34
+    return-void
+.end method
+
+.method public static canAttemptGlobal()Z
+    .registers 6
+
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v0
+
+    sget-wide v2, Lf01/Config;->lastGlobalActionTime:J
+
+    sub-long v2, v0, v2
+
+    const-wide/16 v4, 0x320
+
+    cmp-long v2, v2, v4
+
+    if-gez v2, :cond_10
+
+    const/4 v0, 0x0
+
+    return v0
+
+    :cond_10
+    sput-wide v0, Lf01/Config;->lastGlobalActionTime:J
+
+    const/4 v0, 0x1
+
+    return v0
+.end method
+
+.method public static enforceLimit()V
+    .registers 4
+
+    sget-object v0, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    if-nez v0, :cond_5
+
+    return-void
+
+    :cond_5
+    invoke-virtual {v0}, Ljava/util/HashMap;->size()I
+
+    move-result v1
+
+    const/16 v2, 0xa
+
+    if-le v1, v2, :cond_23
+
+    invoke-virtual {v0}, Ljava/util/HashMap;->keySet()Ljava/util/Set;
+
+    move-result-object v1
+
+    invoke-interface {v1}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
+
+    move-result-object v1
+
+    invoke-interface {v1}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    move-result-object v1
+
+    invoke-virtual {v0, v1}, Ljava/util/HashMap;->remove(Ljava/lang/Object;)Ljava/lang/Object;
+
+    const-string v0, "ConfigDebug"
+
+    const-string v2, "Map limit exceeded, removed oldest"
+
+    invoke-static {v0, v2}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    :cond_23
+    return-void
+.end method
+
+.method public static isRepeated(Ljava/lang/String;)Z
+    .registers 8
+
+    const/4 v3, 0x1
+
+    const/4 v4, 0x0
+
+    sget-object v1, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    if-nez v1, :cond_d
+
+    new-instance v1, Ljava/util/LinkedHashMap;
+
+    invoke-direct {v1}, Ljava/util/LinkedHashMap;-><init>()V
+
+    sput-object v1, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    :cond_d
+    sget-object v1, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    invoke-virtual {v1, p0}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+
+    move-result-object v2
+
+    check-cast v2, Ljava/lang/Integer;
+
+    if-nez v2, :cond_1a
+
+    sget v0, Lf01/Config;->maxRepeats:I
+
+    return v4
+
+    :cond_1a
+    invoke-virtual {v2}, Ljava/lang/Integer;->intValue()I
+
+    move-result v2
+
+    const v6, 0x15f90
+
+    if-le v2, v6, :cond_24
+
+    return v3
+
+    :cond_24
+    sget v0, Lf01/Config;->maxRepeats:I
+
+    if-nez v0, :cond_29
+
+    return v4
+
+    :cond_29
+    if-lt v2, v0, :cond_2c
+
+    return v3
+
+    :cond_2c
+    return v4
+.end method
+
+.method public static markAttempt(Ljava/lang/String;)V
+    .registers 10
+
+    sget-object v0, Lf01/Config;->attemptTimes:Ljava/util/HashMap;
+
+    if-nez v0, :cond_b
+
+    new-instance v0, Ljava/util/HashMap;
+
+    invoke-direct {v0}, Ljava/util/HashMap;-><init>()V
+
+    sput-object v0, Lf01/Config;->attemptTimes:Ljava/util/HashMap;
+
+    :cond_b
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v1
+
+    sget-object v0, Lf01/Config;->attemptTimes:Ljava/util/HashMap;
+
+    invoke-virtual {v0, p0}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+
+    move-result-object v3
+
+    check-cast v3, Ljava/lang/Long;
+
+    if-eqz v3, :cond_26
+
+    invoke-virtual {v3}, Ljava/lang/Long;->longValue()J
+
+    move-result-wide v3
+
+    sub-long v5, v1, v3
+
+    const-wide/16 v7, 0x4b0
+
+    cmp-long v5, v5, v7
+
+    if-gez v5, :cond_26
+
+    return-void
+
+    :cond_26
+    sget-object v0, Lf01/Config;->attemptTimes:Ljava/util/HashMap;
+
+    invoke-static {v1, v2}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
+
+    move-result-object v1
+
+    invoke-virtual {v0, p0, v1}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+
+    sget-object v0, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    if-nez v0, :cond_3a
+
+    new-instance v0, Ljava/util/LinkedHashMap;
+
+    invoke-direct {v0}, Ljava/util/LinkedHashMap;-><init>()V
+
+    sput-object v0, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    :cond_3a
+    sget-object v0, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    invoke-virtual {v0, p0}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+
+    move-result-object v1
+
+    check-cast v1, Ljava/lang/Integer;
+
+    const/4 v2, 0x1
+
+    if-nez v1, :cond_50
+
+    invoke-static {v2}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+
+    move-result-object v1
+
+    invoke-virtual {v0, p0, v1}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+
+    invoke-static {}, Lf01/Config;->enforceLimit()V
+
+    goto :goto_66
+
+    :cond_50
+    invoke-virtual {v1}, Ljava/lang/Integer;->intValue()I
+
+    move-result v1
+
+    const v3, 0x15f90
+
+    if-le v1, v3, :cond_5a
+
+    return-void
+
+    :cond_5a
+    add-int/lit8 v1, v1, 0x1
+
+    invoke-static {v1}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+
+    move-result-object v3
+
+    invoke-virtual {v0, p0, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+
+    invoke-static {}, Lf01/Config;->enforceLimit()V
+
+    :goto_66
+    const-string v0, "ConfigDebug"
+
+    new-instance v2, Ljava/lang/StringBuilder;
+
+    invoke-direct {v2}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v3, "Marked Attempt ID: "
+
+    invoke-virtual {v2, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v2, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    const-string v3, " | Count: "
+
+    invoke-virtual {v2, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    sget-object v3, Lf01/Config;->seenOrders:Ljava/util/HashMap;
+
+    invoke-virtual {v3, p0}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+
+    move-result-object v3
+
+    invoke-virtual {v2, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v2}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-static {v0, v2}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+
+    return-void
+.end method
+
+.method public static shouldHide(Ljava/lang/String;)Z
+    .registers 16
+
+    move-object v8, p0
+
+    if-eqz v8, :cond_92
+
+    invoke-virtual {v8}, Ljava/lang/String;->length()I
+
+    move-result v0
+
+    if-nez v0, :cond_b
+
+    goto/16 :goto_92
+
+    :cond_b
+    const-string v3, "ConfigDebug"
+
+    new-instance v4, Ljava/lang/StringBuilder;
+
+    invoke-direct {v4}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v5, "Input Dist: "
+
+    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v4, v8}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v4
+
+    invoke-static {v3, v4}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    :try_start_21
+    const-string v0, "metro"
+
+    invoke-virtual {v8, v0}, Ljava/lang/String;->contains(Ljava/lang/CharSequence;)Z
+
+    move-result v9
+
+    const-string v0, "~"
+
+    const-string v1, ""
+
+    invoke-virtual {v8, v0, v1}, Ljava/lang/String;->replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;
+
+    move-result-object v0
+
+    const-string v1, " km"
+
+    const-string v2, ""
+
+    invoke-virtual {v0, v1, v2}, Ljava/lang/String;->replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;
+
+    move-result-object v0
+
+    const-string v1, " metro"
+
+    const-string v2, ""
+
+    invoke-virtual {v0, v1, v2}, Ljava/lang/String;->replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;
+
+    move-result-object v0
+
+    const-string v1, " m"
+
+    const-string v2, ""
+
+    invoke-virtual {v0, v1, v2}, Ljava/lang/String;->replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;
+
+    move-result-object v0
+
+    const-string v1, ","
+
+    const-string v2, "."
+
+    invoke-virtual {v0, v1, v2}, Ljava/lang/String;->replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/String;->trim()Ljava/lang/String;
+
+    move-result-object v0
+
+    invoke-static {v0}, Ljava/lang/Double;->parseDouble(Ljava/lang/String;)D
+
+    move-result-wide v0
+
+    if-eqz v9, :cond_5f
+
+    const-wide v10, 0x408f400000000000L    # 1000.0
+
+    div-double/2addr v0, v10
+
+    :cond_5f
+    const-string v3, "ConfigDebug"
+
+    new-instance v4, Ljava/lang/StringBuilder;
+
+    invoke-direct {v4}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v5, "Parsed (km): "
+
+    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v4, v0, v1}, Ljava/lang/StringBuilder;->append(D)Ljava/lang/StringBuilder;
+
+    const-string v5, " Max: "
+
+    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    sget-wide v5, Lf01/Config;->maxPickupDist:D
+
+    invoke-virtual {v4, v5, v6}, Ljava/lang/StringBuilder;->append(D)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v4
+
+    invoke-static {v3, v4}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    sget-wide v2, Lf01/Config;->maxPickupDist:D
+
+    cmpl-double v4, v0, v2
+
+    if-lez v4, :cond_87
+
+    const/4 v0, 0x1
+
+    return v0
+    :try_end_87
+    .catch Ljava/lang/Exception; {:try_start_21 .. :try_end_87} :catch_88
+
+    :cond_87
+    goto :goto_90
+
+    :catch_88
+    move-exception v0
+
+    const-string v3, "ConfigDebug"
+
+    const-string v4, "Error parsing distance"
+
+    invoke-static {v3, v4, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+
+    :goto_90
+    const/4 v0, 0x0
+
+    return v0
+
+    :cond_92
+    :goto_92
+    const/4 v0, 0x0
+
+    return v0
+.end method
+
+.method public static startPolling()V
+    .registers 2
+
+    sget-boolean v0, Lf01/Config;->isPolling:Z
+
+    if-eqz v0, :cond_5
+
+    return-void
+
+    :cond_5
+    const/4 v0, 0x1
+
+    sput-boolean v0, Lf01/Config;->isPolling:Z
+
+    new-instance v0, Ljava/lang/Thread;
+
+    new-instance v1, Lf01/ConfigPoller;
+
+    invoke-direct {v1}, Lf01/ConfigPoller;-><init>()V
+
+    invoke-direct {v0, v1}, Ljava/lang/Thread;-><init>(Ljava/lang/Runnable;)V
+
+    invoke-virtual {v0}, Ljava/lang/Thread;->start()V
+
+    return-void
+.end method
